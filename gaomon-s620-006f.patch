@@ -1,0 +1,38 @@
+diff --git a/hid-ids.h b/hid-ids.h
+index dd31757..f8840c6 100644
+--- a/hid-ids.h
++++ b/hid-ids.h
+@@ -700,6 +700,7 @@
+ #define USB_VENDOR_ID_HUION		0x256c
+ #define USB_DEVICE_ID_HUION_TABLET	0x006e
+ #define USB_DEVICE_ID_HUION_TABLET2	0x006d
++#define USB_DEVICE_ID_HUION_TABLET3	0x006f
+ 
+ #define USB_VENDOR_ID_IBM					0x04b3
+ #define USB_DEVICE_ID_IBM_SCROLLPOINT_III			0x3100
+diff --git a/hid-uclogic-core.c b/hid-uclogic-core.c
+index 0b8a83f..76435de 100644
+--- a/hid-uclogic-core.c
++++ b/hid-uclogic-core.c
+@@ -583,6 +583,8 @@ static const struct hid_device_id uclogic_devices[] = {
+ 				USB_DEVICE_ID_HUION_TABLET) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_HUION,
+ 				USB_DEVICE_ID_HUION_TABLET2) },
++	{ HID_USB_DEVICE(USB_VENDOR_ID_HUION,
++				USB_DEVICE_ID_HUION_TABLET3) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_TRUST,
+ 				USB_DEVICE_ID_TRUST_PANORA_TABLET) },
+ 	{ HID_USB_DEVICE(USB_VENDOR_ID_UCLOGIC,
+diff --git a/hid-uclogic-params.c b/hid-uclogic-params.c
+index ed16f50..82a5652 100644
+--- a/hid-uclogic-params.c
++++ b/hid-uclogic-params.c
+@@ -1827,6 +1827,8 @@ int uclogic_params_init(struct uclogic_params *params,
+ 		     USB_DEVICE_ID_HUION_TABLET):
+ 	case VID_PID(USB_VENDOR_ID_HUION,
+ 		     USB_DEVICE_ID_HUION_TABLET2):
++	case VID_PID(USB_VENDOR_ID_HUION,
++		     USB_DEVICE_ID_HUION_TABLET3):
+ 	case VID_PID(USB_VENDOR_ID_UCLOGIC,
+ 		     USB_DEVICE_ID_HUION_TABLET):
+ 	case VID_PID(USB_VENDOR_ID_UCLOGIC,
