@@ -1,0 +1,11 @@
+# Gaomon S620 (256c:006f) with the patched hid-uclogic driver.
+#
+# systemd's 60-evdev.hwdb sets a resolution for this tablet that only fits the
+# generic driver's 32767x32767 range. hid-uclogic reports the real range
+# (33020x20320 over 165.1x101.6 mm), which is 200 units/mm on both axes.
+# Remove this file if you go back to the stock kernel driver.
+evdev:input:b0003v256Cp006F*
+ EVDEV_ABS_00=::200
+ EVDEV_ABS_01=::200
+ EVDEV_ABS_35=::200
+ EVDEV_ABS_36=::200

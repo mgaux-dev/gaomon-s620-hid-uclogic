@@ -860,6 +860,19 @@ static int uclogic_params_huion_init(struct uclogic_params *params,
 	iface = to_usb_interface(hdev->dev.parent);
 	bInterfaceNumber = iface->cur_altsetting->desc.bInterfaceNumber;
 
+	/*
+	 * On the Gaomon S620 (256c:006f) interface 1 is a second pen, not a
+	 * keyboard, and its stylus collection escapes the pen usage filter.
+	 * It goes silent once interface 0 is switched to vendor mode, so
+	 * ignore it instead of exposing a dead tablet.
+	 */
+	if (bInterfaceNumber == 1 &&
+	    hdev->vendor == USB_VENDOR_ID_HUION &&
+	    hdev->product == USB_DEVICE_ID_HUION_TABLET3) {
+		uclogic_params_init_invalid(&p);
+		goto output;
+	}
+
 	/* If it's a custom keyboard interface */
 	if (bInterfaceNumber == 1) {
 		/* Keep everything intact, but mark pen usage invalid */

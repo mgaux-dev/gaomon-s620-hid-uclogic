@@ -1,7 +1,5 @@
-diff --git a/hid-ids.h b/hid-ids.h
-index dd31757..f8840c6 100644
---- a/hid-ids.h
-+++ b/hid-ids.h
+--- a/hid-ids.h	2026-10-21 19:16:16.929823191 +0200
++++ b/hid-ids.h	2026-10-21 19:16:16.934521610 +0200
 @@ -700,6 +700,7 @@
  #define USB_VENDOR_ID_HUION		0x256c
  #define USB_DEVICE_ID_HUION_TABLET	0x006e
@@ -10,11 +8,9 @@ index dd31757..f8840c6 100644
  
  #define USB_VENDOR_ID_IBM					0x04b3
  #define USB_DEVICE_ID_IBM_SCROLLPOINT_III			0x3100
-diff --git a/hid-uclogic-core.c b/hid-uclogic-core.c
-index 0b8a83f..76435de 100644
---- a/hid-uclogic-core.c
-+++ b/hid-uclogic-core.c
-@@ -583,6 +583,8 @@ static const struct hid_device_id uclogic_devices[] = {
+--- a/hid-uclogic-core.c	2026-10-21 19:16:17.156823371 +0200
++++ b/hid-uclogic-core.c	2026-10-21 19:16:17.159876640 +0200
+@@ -583,6 +583,8 @@
  				USB_DEVICE_ID_HUION_TABLET) },
  	{ HID_USB_DEVICE(USB_VENDOR_ID_HUION,
  				USB_DEVICE_ID_HUION_TABLET2) },
@@ -23,11 +19,29 @@ index 0b8a83f..76435de 100644
  	{ HID_USB_DEVICE(USB_VENDOR_ID_TRUST,
  				USB_DEVICE_ID_TRUST_PANORA_TABLET) },
  	{ HID_USB_DEVICE(USB_VENDOR_ID_UCLOGIC,
-diff --git a/hid-uclogic-params.c b/hid-uclogic-params.c
-index ed16f50..82a5652 100644
---- a/hid-uclogic-params.c
-+++ b/hid-uclogic-params.c
-@@ -1827,6 +1827,8 @@ int uclogic_params_init(struct uclogic_params *params,
+--- a/hid-uclogic-params.c	2026-10-21 19:16:17.317823497 +0200
++++ b/hid-uclogic-params.c	2026-10-21 19:16:17.321539139 +0200
+@@ -860,6 +860,19 @@
+ 	iface = to_usb_interface(hdev->dev.parent);
+ 	bInterfaceNumber = iface->cur_altsetting->desc.bInterfaceNumber;
+ 
++	/*
++	 * On the Gaomon S620 (256c:006f) interface 1 is a second pen, not a
++	 * keyboard, and its stylus collection escapes the pen usage filter.
++	 * It goes silent once interface 0 is switched to vendor mode, so
++	 * ignore it instead of exposing a dead tablet.
++	 */
++	if (bInterfaceNumber == 1 &&
++	    hdev->vendor == USB_VENDOR_ID_HUION &&
++	    hdev->product == USB_DEVICE_ID_HUION_TABLET3) {
++		uclogic_params_init_invalid(&p);
++		goto output;
++	}
++
+ 	/* If it's a custom keyboard interface */
+ 	if (bInterfaceNumber == 1) {
+ 		/* Keep everything intact, but mark pen usage invalid */
+@@ -1827,6 +1840,8 @@
  		     USB_DEVICE_ID_HUION_TABLET):
  	case VID_PID(USB_VENDOR_ID_HUION,
  		     USB_DEVICE_ID_HUION_TABLET2):
